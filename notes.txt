@@ -1,0 +1,21 @@
+Every time changes made to contract(.sol) needs to be redeployed
+    * truffle migrate --reset
+
+To run localhost
+    * npm run dev
+
+Use truffle console to play with various contracts
+    * Election.deployed().then(function(i) { app = i; })
+
+  VOTING
+    *  web3.eth.getAccounts().then(function(acc) { account = acc; }) - this gets all the accounts
+    *  Allows you to call account[0] for first accounts
+    *  app.vote(1, {from: account[0]}) - will cast vote to candidate 1 from account 0
+
+truffle test to run tests
+
+
+Extras for dApp
+      * Timer for votes
+      * Total pot
+      * Value with vote
