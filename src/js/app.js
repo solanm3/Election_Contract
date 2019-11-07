@@ -2,7 +2,7 @@ App = {
   web3Provider: null,
   contracts: {},
   account: '0x0',
-  hasVoted: false,
+  hasPicked: false,
 
   init: function() {
     return App.initWeb3();
@@ -25,11 +25,11 @@ App = {
     },
 
     initContract: function() {
-      $.getJSON("Election.json", function(election) {
+      $.getJSON("Wager.json", function(Wager) {
         // Instantiate a new truffle contract from the artifact
-        App.contracts.Election = TruffleContract(election);
+        App.contracts.Wager = TruffleContract(Wager);
         // Connect provider to interact with contract
-        App.contracts.Election.setProvider(App.web3Provider);
+        App.contracts.Wager.setProvider(App.web3Provider);
 
         App.listenForEvents();
 
@@ -39,23 +39,23 @@ App = {
 
     // Listen for events emitted from the contract
     listenForEvents: function() {
-      App.contracts.Election.deployed().then(function(instance) {
+      App.contracts.Wager.deployed().then(function(instance) {
         // Restart Chrome if you are unable to receive this event
         // This is a known issue with Metamask
         // https://github.com/MetaMask/metamask-extension/issues/2393
-        instance.votedEvent({}, {
+        instance.pickEvent({}, {
           fromBlock: 0,
           toBlock: 'latest'
         }).watch(function(error, event) {
           console.log("event triggered", event)
-          // Reload when a new vote is recorded
+          // Reload when a new pick is recorded
           App.render();
         });
       });
     },
 
     render: function() {
-      var electionInstance;
+      var WagerInstance;
       var loader = $("#loader");
       var content = $("#content");
 
@@ -71,36 +71,36 @@ App = {
       });
 
       // Load contract data
-      App.contracts.Election.deployed().then(function(instance) {
-        electionInstance = instance;
-        return electionInstance.candidatesCount();
-      }).then(function(candidatesCount) {
-        var candidatesResults = $("#candidatesResults");
-        candidatesResults.empty();
+      App.contracts.Wager.deployed().then(function(instance) {
+        WagerInstance = instance;
+        return WagerInstance.teamsCount();
+      }).then(function(teamsCount) {
+        var teamsResults = $("#teamsResults");
+        teamsResults.empty();
 
-        var candidatesSelect = $('#candidatesSelect');
-        candidatesSelect.empty();
+        var teamsSelect = $('#teamsSelect');
+        teamsSelect.empty();
 
-        for (var i = 1; i <= candidatesCount; i++) {
-          electionInstance.candidates(i).then(function(candidate) {
-            var id = candidate[0];
-            var name = candidate[1];
-            var voteCount = candidate[2];
+        for (var i = 1; i <= teamsCount; i++) {
+          WagerInstance.teams(i).then(function(team) {
+            var id = team[0];
+            var name = team[1];
+            var pickCount = team[2];
 
-            // Render candidate Result
-            var candidateTemplate = "<tr><th>" + id + "</th><td>" + name + "</td><td>" + voteCount + "</td></tr>"
-            candidatesResults.append(candidateTemplate);
+            // Render team Result
+            var teamTemplate = "<tr><th>" + id + "</th><td>" + name + "</td><td>" + pickCount + "</td></tr>"
+            teamsResults.append(teamTemplate);
 
-            // Render candidate ballot option
-            var candidateOption = "<option value='" + id + "' >" + name + "</ option>"
-            candidatesSelect.append(candidateOption);
+            // Render team ballot option
+            var teamOption = "<option value='" + id + "' >" + name + "</ option>"
+            teamsSelect.append(teamOption);
           });
         }
-        return electionInstance.voters(App.account);
-      }).then(function(hasVoted) {
-        // Do not allow a user to vote
-        if(hasVoted) {
-          $('form').hide();
+        return WagerInstance.players(App.account);
+      }).then(function(hasPicked) {
+        // Do not allow a user to pick (*** changed to show)
+        if(hasPicked) {
+          $('form').show();
         }
         loader.hide();
         content.show();
@@ -109,12 +109,12 @@ App = {
       });
     },
 
-    castVote: function() {
-      var candidateId = $('#candidatesSelect').val();
-      App.contracts.Election.deployed().then(function(instance) {
-        return instance.vote(candidateId, { from: App.account });
+    castpick: function() {
+      var teamId = $('#teamsSelect').val();
+      App.contracts.Wager.deployed().then(function(instance) {
+        return instance.pick(teamId, { from: App.account });
       }).then(function(result) {
-        // Wait for votes to update
+        // Wait for picks to update
         $("#content").hide();
         $("#loader").show();
       }).catch(function(err) {

@@ -5,7 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Election Results</title>
+    <title>Pick 60</title>
+
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -21,7 +22,7 @@
     <div class="container" style="width: 650px;">
       <div class="row">
         <div class="col-lg-12">
-          <h1 class="text-center">Election Results</h1>
+          <h1 class="text-center">Pick yo team</h1>
           <hr/>
           <br/>
           <div id="loader">
@@ -33,20 +34,21 @@
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">Name</th>
-                  <th scope="col">Votes</th>
+                  <th scope="col">Picks</th>
+                  <th scope="col">Amount</th>
                 </tr>
               </thead>
-              <tbody id="candidatesResults">
+              <tbody id="teamsResults">
               </tbody>
             </table>
             <hr/>
-            <form onSubmit="App.castVote(); return false;">
+            <form onSubmit="App.castPick(); return false;">
               <div class="form-group">
-                <label for="candidatesSelect">Select Candidate</label>
-                <select class="form-control" id="candidatesSelect">
+                <label for="teamsSelect">Select Team</label>
+                <select class="form-control" id="teamsSelect">
                 </select>
               </div>
-              <button type="submit" class="btn btn-primary">Vote</button>
+              <button type="submit" class="btn btn-primary">Pick</button>
               <hr />
             </form>
             <p id="accountAddress" class="text-center"></p>

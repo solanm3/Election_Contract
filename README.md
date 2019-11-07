@@ -1,1 +1,1 @@
-# Election_Contract
+# Wager_Contract
